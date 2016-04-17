@@ -1,0 +1,16 @@
+{
+  "name": "tessel-display",
+  "version": "0.0.0",
+  "description": "LCD display on Tessel 2 controlled from Scala.js",
+  "main": "index.js",
+  "repository": "https://github.com/ebruchez/tessel-display",
+  "keywords": [
+    "Tessel",
+    "Scala"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^1.6.3",
+    "jpeg-js": "^0.2.0"
+  }
+}
