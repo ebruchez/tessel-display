@@ -16,4 +16,4 @@ npmDependencies in Compile += "jpeg-js"    → "0.2.0"
 npmDependencies in Compile += "node-fetch" → "1.6.3"
 
 scalaJSModuleKind := ModuleKind.CommonJSModule
-webpackConfigFile := Some(baseDirectory.value / "my.custom.webpack.config.js")
+webpackConfigFile := Some(baseDirectory.value / "tessel.webpack.config.js")
