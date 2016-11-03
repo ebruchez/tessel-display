@@ -1,46 +1,20 @@
 package org.bruchez.tessel
 
 import scala.async.Async._
+import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
-import scala.scalajs.js.timers.SetIntervalHandle
 import scala.scalajs.js.typedarray.Uint8Array
+import scala.util.control.NonFatal
+import scala.util.{Failure, Success}
 
 object Demo extends js.JSApp {
 
-  object RectangleBlinker {
+  val UpdateDelay = 5.seconds
+  val RetryDelay  = 5.seconds
 
-    private var state = false
-    private var handle: Option[SetIntervalHandle] = None
-
-    def start(): Unit = {
-      if (handle.isEmpty)
-        handle = Some(
-          js.timers.setInterval(1.second) {
-
-            val color =
-              if (state)
-                ST7735.Color.Cyan
-              else
-                ST7735.Color.Magenta
-
-            ST7735.fillRectF(0, 0, 10, 10, color)
-
-            state = ! state
-          }
-        )
-    }
-  }
-
-  def main(): Unit = async {
-
-    println(V8.getHeapStatistics().totalHeapSize)
-
-    LEDBlinker.start()
-
-    await(HT16K33.initialize())
-    await(ST7735.initialize())
+  def kittens(): Future[Unit] = async {
 
     val it = Iterator.from(0, 1)
 
@@ -75,11 +49,27 @@ object Demo extends js.JSApp {
           throw new IllegalStateException // should not happen if `jpeg.decode` is honest
       }
 
-      await(Util.delay(5.seconds))
+      await(Util.delay(UpdateDelay))
+    }
+  }
+
+  def main(): Unit = async {
+
+    LEDBlinker.start()
+
+    await(HT16K33.initialize())
+    await(ST7735.initialize())
+
+    while (true) {
+      await(kittens() map Success.apply recover { case NonFatal(t) ⇒ Failure(t) }) match {
+        case Failure(t) ⇒
+          println(s"Error showing kittens: ${t.getMessage}. Retrying in ${RetryDelay.toString}.")
+          await(Util.delay(RetryDelay))
+        case Success(_) ⇒ // shouldn't happen
+      }
     }
 
-    RectangleBlinker.start()
   } onFailure { case t ⇒
-    println(s"got failure: ${t.getMessage}")
+    println(s"Error during initialization: ${t.getMessage}")
   }
 }
