@@ -6,8 +6,6 @@ import scala.scalajs.js.timers.SetIntervalHandle
 
 object LEDBlinker {
 
-  val tessel = Tessel()
-
   private var ledOn = false
   private var handle: Option[SetIntervalHandle] = None
 
@@ -16,9 +14,9 @@ object LEDBlinker {
       handle = Some(
         js.timers.setInterval(1.second) {
           if (ledOn)
-            tessel.led(3).off()
+            Tessel.led(3).off()
           else
-            tessel.led(3).on()
+            Tessel.led(3).on()
 
           ledOn = ! ledOn
         }

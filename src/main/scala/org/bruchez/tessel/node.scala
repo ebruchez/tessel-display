@@ -1,8 +1,7 @@
 package org.bruchez.tessel
 
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{global ⇒ g}
-import scala.scalajs.js.annotation.JSBracketAccess
+import scala.scalajs.js.annotation.{JSBracketAccess, JSImport}
 
 /**
  * Facades for a few Node.js APIs.
@@ -37,18 +36,13 @@ trait HeapStatistics extends js.Object {
 }
 
 @js.native
-trait V8 extends js.Object {
+@JSImport("v8", JSImport.Namespace)
+object V8 extends js.Object {
   def getHeapStatistics(): HeapStatistics = js.native
   def setFlagsFromString(flags: String): Unit = js.native
   // Node v6 has getHeapSpaceStatistics()
-}
 
-object V8 {
-  def apply() = g.require("v8").asInstanceOf[V8]
-
-  implicit class V8Ops(val s: V8) extends AnyVal {
-
-    def getHeapStatisticsAsMap = s.getHeapStatistics().asInstanceOf[js.Dictionary[Int]].toMap
+//  def getHeapStatisticsAsMap = getHeapStatistics().asInstanceOf[js.Dictionary[Int]].toMap
 
 //    def totalHeapSize           = s.getHeapStatistics().apply("total_heap_size")
 //    def totalHeapSizeExecutable = s.getHeapStatistics().apply("total_heap_size_executable")
@@ -56,7 +50,6 @@ object V8 {
 //    def totalAvailableSize      = s.getHeapStatistics().apply("total_available_size")
 //    def usedHeapSize            = s.getHeapStatistics().apply("used_heap_size")
 //    def heapSizeLimit           = s.getHeapStatistics().apply("heap_size_limit")
-  }
 }
 
 @js.native
@@ -87,7 +80,8 @@ trait Address extends js.Object {
 
 //https://nodejs.org/dist/latest-v4.x/docs/api/os.html
 @js.native
-trait OS extends js.Object {
+@JSImport("os", JSImport.Namespace)
+object OS extends js.Object {
   def EOL()               : String                           = js.native
   def arch()              : String                           = js.native
   def cpus()              : js.Array[CPU]                    = js.native
@@ -105,9 +99,6 @@ trait OS extends js.Object {
   def uptime()            : Int                              = js.native
 }
 
-object OS {
-  def apply() = g.require("os").asInstanceOf[OS]
-}
 
 @js.native
 class Buffer(array: js.Array[Int]) extends js.Object {

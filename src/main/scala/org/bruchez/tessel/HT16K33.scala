@@ -7,9 +7,7 @@ import scala.scalajs.js
 
 object HT16K33 {
 
-  val tessel = Tessel()
-
-  val port = tessel.port.B
+  val port = Tessel.port.B
 
   val DisplayI2CAddress = 0x70
   val i2c  =  port.I2C(DisplayI2CAddress)

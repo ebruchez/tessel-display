@@ -3,6 +3,7 @@ package org.bruchez.tessel
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{global ⇒ g}
+import scala.scalajs.js.annotation.JSImport
 
 /**
  * Facades for a few Tessel 2 APIs.
@@ -115,17 +116,24 @@ trait Ports extends js.Object {
   def B: Port = js.native
 }
 
+//@js.native
+//trait Tessel extends js.Object {
+//  def led: js.Array[Led] = js.native
+//  def port: Ports = js.native
+//
+//  // pwmFrequency is capable of frequencies from 1Hz to 5kHz
+//  def pwmFrequency(value: Int): js.native
+//}
+
 @js.native
-trait Tessel extends js.Object {
+@JSImport("tessel", JSImport.Namespace)
+object Tessel extends js.Object {
+
   def led: js.Array[Led] = js.native
-  def port: Ports = js.native
+  def port: Ports        = js.native
 
   // pwmFrequency is capable of frequencies from 1Hz to 5kHz
-  def pwmFrequency(value: Int): js.native
-}
-
-object Tessel {
-  def apply() = g.require("tessel").asInstanceOf[Tessel]
+//  def pwmFrequency(value: Int): js.native
 }
 
 // Anything that can be on or off

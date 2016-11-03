@@ -1,7 +1,7 @@
 package org.bruchez.tessel
 
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{global ⇒ g}
+import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.typedarray.Uint8Array
 import scala.scalajs.js.|
 
@@ -11,12 +11,10 @@ import scala.scalajs.js.|
 //
 // https://github.com/eugeneware/jpeg-js
 //
-object JpegJs {
-    def apply() = g.require("jpeg-js").asInstanceOf[JpegJs]
-}
 
 @js.native
-trait JpegJs extends js.Object {
+@JSImport("jpeg-js", JSImport.Namespace)
+object JpegJs extends js.Object {
   def decode(buffer: Buffer, asUint8Array: Boolean = false): JpegJsResult = js.native
 }
 

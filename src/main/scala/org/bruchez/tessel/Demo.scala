@@ -2,20 +2,12 @@ package org.bruchez.tessel
 
 import scala.async.Async._
 import scala.concurrent.duration._
-import scala.scalajs.js.typedarray.Uint8Array
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{global ⇒ g}
 import scala.scalajs.js.timers.SetIntervalHandle
+import scala.scalajs.js.typedarray.Uint8Array
 
 object Demo extends js.JSApp {
-
-  val tessel    = Tessel()
-  val v8        = V8()
-  val os        = OS()
-  val nodeFetch = NodeFetch()
-  val jpeg      = JpegJs()
 
   object RectangleBlinker {
 
@@ -43,6 +35,8 @@ object Demo extends js.JSApp {
 
   def main(): Unit = async {
 
+    println(V8.getHeapStatistics().totalHeapSize)
+
     LEDBlinker.start()
 
     await(HT16K33.initialize())
@@ -59,12 +53,12 @@ object Demo extends js.JSApp {
       val url    = s"https://placekitten.com/${ST7735.ScreenWidth}/$height"
 
       // TODO: Handle failure of fetch and just continue with next one. Have this return a Future[Try[Response]].
-      val response = await(nodeFetch(url, null).toFuture)
+      val response = await(NodeFetch(url, null).toFuture)
 
       println(s"got response buffer: ${response.status}, length: ${response.headers.get("Content-Length")}")
 
       val responseBuffer = await(response.asInstanceOf[NodeFetchResponse].buffer().toFuture)
-      val rawImageData   = jpeg.decode(responseBuffer, asUint8Array = true)
+      val rawImageData   = JpegJs.decode(responseBuffer, asUint8Array = true)
 
       println(s"decoded image data, w = ${rawImageData.width}, h = ${rawImageData.height}")
 

@@ -5,7 +5,6 @@ import scala.concurrent.Future
 import scala.concurrent.duration.{FiniteDuration, _}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{global ⇒ g}
 import scala.scalajs.js.JSConverters._
 import scala.scalajs.js.typedarray.Uint8Array
 import scalaxy.streams.optimize
@@ -35,9 +34,7 @@ import scalaxy.streams.optimize
 //
 object ST7735 {
 
-  val tessel = Tessel()
-
-  val displayPort    = tessel.port.A
+  val displayPort            = Tessel.port.A
 
   private val SpiFrequency   = 6 * 1000 * 1000 // managed to make it work up to 6 MHz
 
