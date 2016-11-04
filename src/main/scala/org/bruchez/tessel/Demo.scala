@@ -6,8 +6,8 @@ import scala.concurrent.duration._
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
 import scala.scalajs.js.typedarray.Uint8Array
-import scala.util.control.NonFatal
 import scala.util.{Failure, Success}
+import Util._
 
 object Demo extends js.JSApp {
 
@@ -22,9 +22,9 @@ object Demo extends js.JSApp {
 
       // Because placekitten.com always returns the same image for a given size, in order to get a set of different
       // images we get images that are progressively taller and truncate their bottom when writing them to the buffer.
-      val digit  = it.next() % 30
-      val height = ST7735.ScreenHeight + digit
-      val url    = s"https://placekitten.com/${ST7735.ScreenWidth}/$height"
+      val increment = it.next() % 30
+      val height    = ST7735.ScreenHeight + increment
+      val url       = s"https://placekitten.com/${ST7735.ScreenWidth}/$height"
 
       // TODO: Handle failure of fetch and just continue with next one. Have this return a Future[Try[Response]].
       val response = await(NodeFetch(url, null).toFuture)
@@ -45,11 +45,11 @@ object Demo extends js.JSApp {
               rawImageData.height min ST7735.ScreenHeight
             )
           )
-        case _⇒
+        case _: Buffer ⇒
           throw new IllegalStateException // should not happen if `jpeg.decode` is honest
       }
 
-      await(Util.delay(UpdateDelay))
+      await(delay(UpdateDelay))
     }
   }
 
@@ -60,12 +60,15 @@ object Demo extends js.JSApp {
     await(HT16K33.initialize())
     await(ST7735.initialize())
 
-    while (true) {
-      await(kittens() map Success.apply recover { case NonFatal(t) ⇒ Failure(t) }) match {
+    var done = false
+    while (! done) {
+      await(kittens().toTry) match {
         case Failure(t) ⇒
           println(s"Error showing kittens: ${t.getMessage}. Retrying in ${RetryDelay.toString}.")
-          await(Util.delay(RetryDelay))
-        case Success(_) ⇒ // shouldn't happen
+          await(delay(RetryDelay))
+        case Success(_) ⇒
+          // Shouldn't happen as kittens() doesn't normally return
+          done = true
       }
     }
 
