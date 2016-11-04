@@ -4,8 +4,8 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSBracketAccess, JSImport}
 
 /**
- * Facades for a few Node.js APIs.
- */
+  * Facades for a few Node.js APIs.
+  */
 
 @js.native
 trait Error extends js.Object {
@@ -40,16 +40,7 @@ trait HeapStatistics extends js.Object {
 object V8 extends js.Object {
   def getHeapStatistics(): HeapStatistics = js.native
   def setFlagsFromString(flags: String): Unit = js.native
-  // Node v6 has getHeapSpaceStatistics()
-
-//  def getHeapStatisticsAsMap = getHeapStatistics().asInstanceOf[js.Dictionary[Int]].toMap
-
-//    def totalHeapSize           = s.getHeapStatistics().apply("total_heap_size")
-//    def totalHeapSizeExecutable = s.getHeapStatistics().apply("total_heap_size_executable")
-//    def totalPhysicalSize       = s.getHeapStatistics().apply("total_physical_size")
-//    def totalAvailableSize      = s.getHeapStatistics().apply("total_available_size")
-//    def usedHeapSize            = s.getHeapStatistics().apply("used_heap_size")
-//    def heapSizeLimit           = s.getHeapStatistics().apply("heap_size_limit")
+  // NOTE: Node 6 has `getHeapSpaceStatistics()`.
 }
 
 @js.native
@@ -75,10 +66,8 @@ trait Address extends js.Object {
   val family          : String  = js.native
   val mac             : String  = js.native
   val internal        : Boolean = js.native
-  //scopeid
 }
 
-//https://nodejs.org/dist/latest-v4.x/docs/api/os.html
 @js.native
 @JSImport("os", JSImport.Namespace)
 object OS extends js.Object {

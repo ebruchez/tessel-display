@@ -5,12 +5,11 @@ import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.typedarray.Uint8Array
 import scala.scalajs.js.|
 
-// jpeg-js
-//
-// A pure javascript JPEG encoder and decoder for node.js
-//
-// https://github.com/eugeneware/jpeg-js
-//
+/**
+  * Facade for a few jpeg-js, a pure javascript JPEG encoder and decoder for node.js.
+  *
+  * https://github.com/eugeneware/jpeg-js
+  */
 
 @js.native
 @JSImport("jpeg-js", JSImport.Namespace)
