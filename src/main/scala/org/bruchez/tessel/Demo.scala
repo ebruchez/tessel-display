@@ -26,7 +26,6 @@ object Demo extends js.JSApp {
       val height    = ST7735.ScreenHeight + increment
       val url       = s"https://placekitten.com/${ST7735.ScreenWidth}/$height"
 
-      // TODO: Handle failure of fetch and just continue with next one. Have this return a Future[Try[Response]].
       val response = await(NodeFetch(url, null).toFuture)
 
       println(s"got response buffer: ${response.status}, length: ${response.headers.get("Content-Length")}")
