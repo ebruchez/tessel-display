@@ -90,7 +90,7 @@ object OS extends js.Object {
 
 
 @js.native
-class Buffer(array: js.Array[Int]) extends js.Object {
+class Buffer(array: js.Array[_]) extends js.Object {
   @JSBracketAccess
   def apply(index: Int): Int = js.native
 
@@ -99,4 +99,5 @@ class Buffer(array: js.Array[Int]) extends js.Object {
 
   def length                              : Int    = js.native
   def slice(start: Int, end: Int = length): Buffer = js.native
+  def copy(target: Buffer, targetStart: Int = 0, sourceStart: Int = 0, sourceEnd: Int = length): Int = js.native
 }

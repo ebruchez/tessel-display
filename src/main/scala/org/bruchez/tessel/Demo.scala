@@ -20,6 +20,8 @@ object Demo extends js.JSApp {
 
     while (it.hasNext) {
 
+      await(showStatus(Neutral))
+
       // Because placekitten.com always returns the same image for a given size, in order to get a set of different
       // images we get images that are progressively taller and truncate their bottom when writing them to the buffer.
       val increment = it.next() % 30
@@ -44,12 +46,32 @@ object Demo extends js.JSApp {
               rawImageData.height min ST7735.ScreenHeight
             )
           )
+          await(showStatus(Positive))
         case _: Buffer ⇒
           throw new IllegalStateException // should not happen if `jpeg.decode` is honest
       }
 
       await(delay(UpdateDelay))
     }
+  }
+
+  sealed trait Status
+  case object Positive extends Status
+  case object Neutral  extends Status
+  case object Negative extends Status
+
+  private def showStatus(status: Status) = {
+
+    val bitmap = status match {
+      case Positive ⇒ HT16K33.Smile
+      case Neutral  ⇒ HT16K33.Neutral
+      case Negative ⇒ HT16K33.Frown
+    }
+
+    HT16K33.clear()
+    HT16K33.drawBitmap(0, 0, bitmap, 8, 8, 1)
+
+    HT16K33.sendFrame()
   }
 
   def main(): Unit = async {
@@ -59,11 +81,14 @@ object Demo extends js.JSApp {
     await(HT16K33.initialize())
     await(ST7735.initialize())
 
+    await(showStatus(Neutral))
+
     var done = false
     while (! done) {
       await(kittens().toTry) match {
         case Failure(t) ⇒
           println(s"Error showing kittens: ${t.getMessage}. Retrying in ${RetryDelay.toString}.")
+          await(showStatus(Negative))
           await(delay(RetryDelay))
         case Success(_) ⇒
           // Shouldn't happen as kittens() doesn't normally return
