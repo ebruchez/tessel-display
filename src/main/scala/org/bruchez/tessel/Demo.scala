@@ -46,6 +46,9 @@ object Demo extends js.JSApp {
               rawImageData.height min ST7735.ScreenHeight
             )
           )
+          await(
+            ST7735.fillRectF(10, ST7735.ScreenHeight - 10 - 10, ST7735.ScreenWidth - 20, 10, ST7735.Color.Red)
+          )
           await(showStatus(Positive))
         case _: Buffer ⇒
           throw new IllegalStateException // should not happen if `jpeg.decode` is honest

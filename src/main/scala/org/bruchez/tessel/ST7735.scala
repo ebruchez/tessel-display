@@ -190,7 +190,7 @@ object ST7735 {
   )
 
   def writeCommandF(cmd: SPICommand): Future[Unit] = async {
-    println(s"  - about to run command ${cmd.cmd.code}")
+//    println(s"  - about to run command ${cmd.cmd.code}")
     dataCommandPin.low() // -D/CX=’0’: command data.
     await(spi.sendF(new Buffer(js.Array(cmd.cmd.code))))
     if (cmd.args.nonEmpty)
@@ -297,13 +297,13 @@ object ST7735 {
   }
 
   def rgbTo16(r: Int, g: Int, b: Int) =
-    ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
+    ((b & 0xf8) << 8) | ((g & 0xfc) << 3) | (r >> 3)
 
   private val MaxSpiBufferSize = 254 // actually 255 but we write 16-bit values so don't split pixels
 
   def sendFrame(data: Uint8Array, width: Int, height: Int): Future[Unit] = async {
 
-    println(s"  - sending frame, width = $width, height= $height")
+//    println(s"  - sending frame, width = $width, height= $height")
 
     val totalPixels     = width * height
     val pixelsPerBuffer = MaxSpiBufferSize / 2
@@ -320,7 +320,7 @@ object ST7735 {
       val rgb16 = rgbTo16(data(inputIndex), data(inputIndex + 1), data(inputIndex + 2))
 
       outputBuffer(index)     = rgb16 >> 8
-      outputBuffer(index + 1) = rgb16 & 0xff
+      outputBuffer(index + 1) = rgb16
 
       inputIndex += 4
     }
